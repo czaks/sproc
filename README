@@ -1,0 +1,32 @@
+SProc
+-----
+
+A simple signal processing package for Ruby. At the moment it supports
+only the Microsoft PCM WAVE file format as input and output.
+
+
+Example (mixing two files):
+---------------------------
+
+require "sproc"
+SProc.add(:a, "firstfile.wav").
+      add(:b, "secondfile.wav").
+      process("audioout.wav") do |files,i|
+        a,b = files[:a].getnext.pop, files[:b].getnext.pop
+        return :eof if a == :eof or b == :eof
+        [a[0]+b[0]], [a[1],b[1]]
+      end
+
+
+Example (generating a sine wave):
+-------------------------------
+
+require "sproc"
+SProc.new.process("wave.wav") { |files,i| [(Math.sin(i) * SProc::IO::MAX).round] }
+
+
+Known bugs
+----------
+
+The package is really slow and not well tested yet (you can consider it
+alpha quality)
